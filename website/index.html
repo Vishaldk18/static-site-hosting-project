@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    background-color: #333333;
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    outline: none;
+}
+
+button {
+    width: 25%;
+    padding: 10px;
+    background-color: #6200EA;
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3700B3;
+}
+
+#weather-info {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+#error-message {
+    color: #FF5722;
+    margin-top: 20px;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather App</h1>
+      <div class="input-container">
+        <input type="text" id="city-input" placeholder="Enter city name" />
+        <button id="get-weather-btn">Get Weather</button>
+      </div>
+      <div id="weather-info" class="hidden">
+        <h2 id="city-name"></h2>
+        <p id="temperature"></p>
+        <p id="description"></p>
+      </div>
+      <p id="error-message" class="hidden">City not found. Please try again.</p>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const cityInput = document.getElementById("city-input");
+  const getWeatherBtn = document.getElementById("get-weather-btn");
+  const weatherInfo = document.getElementById("weather-info");
+  const cityNameDisplay = document.getElementById("city-name");
+  const temperatureDisplay = document.getElementById("temperature");
+  const descriptionDisplay = document.getElementById("description");
+  const errorMessage = document.getElementById("error-messag");
+
+  const API_KEY = "48f374d9400054214b4f6c2e61cf04fe"; //env variables
+
+  getWeatherBtn.addEventListener('click',async ()=>{
+    const city = cityInput.value.trim();
+    if(!city) return;
+
+    try{
+
+      const weatherData = await fetchWeatherData(city);
+      displayWeatherData(weatherData);
+
+    }catch(error){
+      displayErrorMessage();
+    }
+  })
+
+  async function fetchWeatherData(city){
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+    const response = await fetch(url);
+    // console.log(typeof response);
+    // console.log('Response',response);
+    if(!response.ok){
+      throw new Error("city not found");
+    }
+
+    const data = await response.json();
+    return data;
+  }
+
+  function displayWeatherData(data){
+    console.log(data);
+    const { name, main, weather } = data;
+    console.log(name);
+    cityNameDisplay.textContent = name;
+    temperatureDisplay.textContent = `Temperature : ${main.temp}`;
+    descriptionDisplay.textContent = `Weather : ${weather[0].description}`;
+
+    weatherInfo.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
+  }
+
+  function displayErrorMessage(){
+    weatherInfo.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
+  }
+});
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform working directory
+.terraform/
+
+# Terraform variable files (optional, only if you keep secrets in them)
+*.tfvars
+
+# Environment files (PowerShell)
+.env.ps1
+
+# Environment files (optional, cross-shell)
+.env
